@@ -18,36 +18,6 @@ from pipelines.raw_zone.zone_configurator.zone_environment_configurator import (
 )
 
 
-now = datetime.now()
-DAG_NAME = "incremental_deidentification_to_gcs"
-
-
-DEID_CONFIG_PATH = (
-    "../incremental_deid_config.json"
-)
-with open(DEID_CONFIG_PATH, "r", encoding="utf-8") as global_deid_config:
-    deid_config = json.load(global_deid_config)
-
-
-ZONES_FILE_PATH = (
-    "../zone_config.yaml"
-)
-with open(ZONES_FILE_PATH, "r", encoding="utf-8") as zones_file:
-    zones_info = yaml.load(zones_file, Loader=yaml.FullLoader)
-
-
-common_start_date = datetime.strptime(zones_info["start_date"], "%Y-%m-%d")
-
-zones = [
-    (
-        zone["product"],
-        zone["region"],
-        zone["kube_config_name"],
-        zone["image_data_gcs_deidentification"],
-    )
-    for zone in zones_info["zones"]
-]
-
 with DAG(
     DAG_NAME,
     schedule_interval="25 0 * * *",
